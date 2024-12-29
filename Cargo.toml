@@ -1,0 +1,16 @@
+[package]
+name = "ts-nav"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tree-sitter = "0.24.6"
+glob = "0.3"
+ignore = "0.4"
+regex = "1.5"
+tree-sitter-python = "0.23.6"
+streaming-iterator = "0.1.9"
+tree-sitter-highlight = "=0.24.6"
+anstyle = "1.0.10"
+tree-sitter-tags = "0.24.6"
+tree-sitter-rust = "0.23.2"
