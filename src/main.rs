@@ -50,14 +50,8 @@ fn highlight(input: &str, config: &LangConfig) -> String {
         .collect();
 
     let mut highlighter = Highlighter::new();
-    let mut python_config = HighlightConfiguration::new(
-        config.language.to_owned(),
-        "whatever",
-        &config.highlights,
-        "",
-        "",
-    )
-    .unwrap();
+    let mut python_config =
+        HighlightConfiguration::new(config.language.to_owned(), "whatever", &config.highlights, "", "").unwrap();
     python_config.configure(&highlight_names);
     let highlights = highlighter
         .highlight(&python_config, input.as_bytes(), None, |_| None)
@@ -137,9 +131,7 @@ fn main() {
 
     let mut context = TagsContext::new();
 
-    let walker = WalkBuilder::new(path)
-        .add_custom_ignore_filename(".gitignore")
-        .build();
+    let walker = WalkBuilder::new(path).add_custom_ignore_filename(".gitignore").build();
 
     for some_entry in walker {
         let Ok(entry) = some_entry else { continue };
@@ -160,8 +152,7 @@ fn main() {
         };
         let code = fs::read_to_string(entry.path()).unwrap();
 
-        let tag_config =
-            TagsConfiguration::new(lang_config.language.to_owned(), &lang_config.query, "");
+        let tag_config = TagsConfiguration::new(lang_config.language.to_owned(), &lang_config.query, "");
         match tag_config {
             Ok(t) => {
                 let (tags, _) = context.generate_tags(&t, code.as_bytes(), None).unwrap();
