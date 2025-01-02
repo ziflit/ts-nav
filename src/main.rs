@@ -128,6 +128,36 @@ fn main() {
         (#match? @name "(?i).*{query_str}.*"))
     "#
     );
+    let go_function_definition_query = format!(
+        r#"
+        ; defs
+        ((comment)* @doc
+          .
+          (function_declaration
+            name: (identifier) @name) @definition.function
+          (#strip! @doc "^//\\s*")
+          (#set-adjacent! @doc @definition.function)
+        (#match? @name "(?i).*{query_str}.*"))
+
+        ((comment)* @doc
+          .
+          (method_declaration
+            name: (field_identifier) @name) @definition.method
+          (#strip! @doc "^//\\s*")
+          (#set-adjacent! @doc @definition.method)
+        (#match? @name "(?i).*{query_str}.*"))
+        ; refs
+
+        ((call_expression
+          function: [
+            (identifier) @name
+            (parenthesized_expression (identifier) @name)
+            (selector_expression field: (field_identifier) @name)
+            (parenthesized_expression (selector_expression field: (field_identifier) @name))
+          ]) @reference.call
+        (#match? @name "(?i).*{query_str}.*"))
+    "#
+    );
 
     let mut context = TagsContext::new();
 
@@ -146,6 +176,11 @@ fn main() {
                 language: tree_sitter_rust::LANGUAGE.into(),
                 highlights: String::from(tree_sitter_rust::HIGHLIGHTS_QUERY),
                 query: String::from(&rust_function_definition_query),
+            },
+            Some("go") => LangConfig {
+                language: tree_sitter_go::LANGUAGE.into(),
+                highlights: String::from(tree_sitter_go::HIGHLIGHTS_QUERY),
+                query: String::from(&go_function_definition_query),
             },
             Some(_) => continue,
             None => continue,
